@@ -88,10 +88,9 @@ Node *minVal(Node *root)
     return temp;
 }
 
-maxval
+// maxval
 
-    Node *
-    maxVal(Node *root)
+Node *maxVal(Node *root)
 {
     Node *temp = root;
     while (temp->right != NULL)
@@ -105,16 +104,25 @@ Node *deleteFromBST(Node *root, int val)
 {
     if (root == NULL)
         return root;
-    if (root->data == val)
+
+    if (val < root->data)
     {
+        root->left = deleteFromBST(root->left, val);
+    }
+    else if (val > root->data)
+    {
+        root->right = deleteFromBST(root->right, val);
+    }
+    else
+    { // Found the node to delete
+        // Case 1: Node with no children
         if (root->left == NULL && root->right == NULL)
         {
             delete root;
             return NULL;
         }
 
-        //  1 Node
-
+        // Case 2: Node with only one child
         if (root->left != NULL && root->right == NULL)
         {
             Node *temp = root->left;
@@ -128,16 +136,15 @@ Node *deleteFromBST(Node *root, int val)
             return temp;
         }
 
-        // 2 Node
-
-        if (root->right != NULL && root->left != NULL)
+        // Case 3: Node with two children
+        if (root->left != NULL && root->right != NULL)
         {
-            int mini = minVal(root->right)->data;
-            root->data = mini;
-            root->right = deleteFromBST(root->right, mini);
-            return root;
+            Node *successor = minVal(root->right);
+            root->data = successor->data;
+            root->right = deleteFromBST(root->right, successor->data);
         }
     }
+    return root;
 }
 int main()
 {

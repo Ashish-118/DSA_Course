@@ -117,7 +117,7 @@ int main()
     bool val = floydDetection(head) == NULL ? false : true;
     cout << val << endl;
     cout << "Starting Node of the circular list " << getStartingNode(head)->next->data << endl;
-    removeLoops(head); // by the Internal loop has been removed
-    print(head);
+    // removeLoops(head); // by the Internal loop has been removed
+    // print(head);
     return 0;
 }

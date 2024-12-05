@@ -51,7 +51,6 @@ int balanced(Node *root, bool &check)
     int diff = abs(left - right);
 
     if (check)
-
     {
         check = (diff <= 1) && check ? true : false;
     }
