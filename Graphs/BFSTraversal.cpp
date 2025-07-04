@@ -1,10 +1,10 @@
 #include <iostream>
 #include <list>
 #include <unordered_map>
+#include <queue> // Added queue header
 using namespace std;
 
 template <typename T>
-
 class graph
 {
 public:
@@ -18,6 +18,7 @@ public:
             adj[v].push_back(u);
         }
     }
+
     void printAdjList()
     {
         for (auto i : adj)
@@ -29,6 +30,34 @@ public:
             }
             cout << endl;
         }
+    }
+
+    void bfs()
+    {
+        unordered_map<T, bool> visited;
+        queue<T> q;
+
+        // Start BFS from the first node in the adjacency list
+        T startNode = adj.begin()->first;
+        q.push(startNode);
+        visited[startNode] = true;
+
+        while (!q.empty())
+        {
+            T front = q.front(); // Changed int to T
+            cout << front << " ";
+            q.pop();
+
+            for (auto i : adj[front])
+            {
+                if (!visited[i])
+                {
+                    q.push(i);
+                    visited[i] = true;
+                }
+            }
+        }
+        cout << endl;
     }
 };
 
@@ -47,6 +76,8 @@ int main()
     }
 
     g.printAdjList();
+    cout << "BFS Traversal: ";
+    g.bfs();
 
     return 0;
 }
