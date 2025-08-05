@@ -30,7 +30,7 @@ public:
         }
     }
 
-    void shortestPath(vector<int> &dist, set<pair<int, int>> &entry)++ ++ +
+    void shortestPath(vector<int> &dist, set<pair<int, int>> &entry)
     {
 
         while (!entry.empty())
