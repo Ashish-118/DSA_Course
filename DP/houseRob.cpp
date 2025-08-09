@@ -17,3 +17,31 @@ public:
         return dp[len - 1];
     }
 };
+
+// space optimised
+
+class Solution
+{
+public:
+    int solve(vector<int> &nums, int n)
+    {
+        int prev1 = 0, prev2 = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            int Take = (i >= 2 ? nums[i] + prev1 : nums[i]);
+            int notTake = (i >= 1 ? 0 + prev2 : 0);
+            prev1 = prev2;
+            prev2 = max(Take, notTake);
+        }
+
+        return prev2;
+    }
+    int rob(vector<int> &nums)
+    {
+
+        int n = nums.size();
+
+        return solve(nums, n);
+    }
+};
