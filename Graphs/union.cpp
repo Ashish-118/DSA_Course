@@ -12,7 +12,7 @@ public:
         if (parent[node] == node)
             return node;
 
-        return findParent_NoPathCompression(parent, parent[node]); // no path compression
+        return findParent_NoPathCompression(parent, parent[node]); // no path compression O(V)
     }
 
     int kruskalsMST(int V, vector<vector<int>> &edges)
@@ -40,7 +40,7 @@ public:
         }
         return ans;
     }
-}; // here we are not using path compression to optimize the find operation in union-find structure // O(V*E);
+}; // here we are not using path compression to optimize the find operation in union-find structure
 
 //----------------------------
 class Solution
@@ -55,7 +55,7 @@ public:
         if (parent[node] == node)
             return node;
 
-        return parent[node] = findParent_pathCompression(parent, parent[node]); // path compression
+        return parent[node] = findParent_pathCompression(parent, parent[node]); // with path compression O(⍺(V))
     }
 
     int kruskalsMST(int V, vector<vector<int>> &edges)
@@ -84,12 +84,11 @@ public:
         return ans;
     }
 }; // here we are using path compression to optimize the find operation in union-find structure
-// O(log N)
 
 //---------------------------------------
 
 // here we are using rank concept to find the union of two sets without path compression
-// O(log N)
+
 // User function Template for C++
 class Solution
 {
@@ -104,10 +103,10 @@ public:
         if (parent[node] == node)
             return node;
 
-        return findParent_noPathCompression(parent, parent[node]); // without path compression path compression
+        return findParent_noPathCompression(parent, parent[node]); // no path compression O(V)
     }
 
-    void unionByRank(vector<int> &parent, vector<int> &rank, int parent_u, int parent_v)
+    void unionByRank(vector<int> &parent, vector<int> &rank, int parent_u, int parent_v) // O(1)
     {
 
         if (rank[parent_u] < rank[parent_v])
@@ -156,7 +155,7 @@ public:
 };
 //------------------------------------------
 // here we are using rank concept to find the union of two sets with path compression
-// O(1)
+
 // User function Template for C++
 class Solution
 {
@@ -170,10 +169,10 @@ public:
         if (parent[node] == node)
             return node;
 
-        return parent[node] = findParent_pathCompression(parent, parent[node]); // path compression
+        return parent[node] = findParent_pathCompression(parent, parent[node]); // with path compression O(⍺(V))
     }
 
-    void unionByRank(vector<int> &parent, vector<int> &rank, int parent_u, int parent_v)
+    void unionByRank(vector<int> &parent, vector<int> &rank, int parent_u, int parent_v) // O(1)
     {
 
         if (rank[parent_u] < rank[parent_v])
