@@ -23,7 +23,7 @@ void solve(int node, int parent, int &timer, unordered_map<int, list<int>> &adj,
                 result.push_back({node, x});
             }
         }
-        else if (x != parent)
+        else if (x != parent) // back edge
         {
             low[node] = min(low[node], disc[x]);
         }
