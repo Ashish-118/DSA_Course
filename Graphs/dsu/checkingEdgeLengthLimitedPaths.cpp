@@ -13,12 +13,12 @@ public:
     {
         if (rank[parentU] > rank[parentV])
         {
-            rank[parentU]++;
+
             parent[parentV] = parentU;
         }
         else if (rank[parentU] < rank[parentV])
         {
-            rank[parentV]++;
+
             parent[parentU] = parentV;
         }
         else

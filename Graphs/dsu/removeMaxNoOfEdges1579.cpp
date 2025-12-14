@@ -25,12 +25,10 @@ public:
         if (rank[parentU] < rank[parentV])
         {
             parent[parentU] = parentV;
-            rank[parentV]++;
         }
         else if (rank[parentU] > rank[parentV])
         {
             parent[parentV] = parentU;
-            rank[parentU]++;
         }
         else
         {

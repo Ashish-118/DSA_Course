@@ -111,12 +111,12 @@ public:
 
         if (rank[parent_u] < rank[parent_v])
         {
-            rank[parent_v]++;
+
             parent[parent_u] = parent_v;
         }
         else if (rank[parent_u] > rank[parent_v])
         {
-            rank[parent_u]++;
+
             parent[parent_v] = parent_u;
         }
         else
@@ -177,12 +177,12 @@ public:
 
         if (rank[parent_u] < rank[parent_v])
         {
-            rank[parent_v]++;
+
             parent[parent_u] = parent_v;
         }
         else if (rank[parent_u] > rank[parent_v])
         {
-            rank[parent_u]++;
+
             parent[parent_v] = parent_u;
         }
         else

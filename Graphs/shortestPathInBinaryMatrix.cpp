@@ -69,3 +69,120 @@ public:
         return dij(grid, dist, row, col);
     }
 };
+
+// we can also solve using minheap and without dist array
+
+class Solution
+{
+public:
+    using p = pair<int, pair<int, int>>;
+
+    int shortestPathBinaryMatrix(vector<vector<int>> &grid)
+    {
+        vector<pair<int, int>> dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}, {0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+        priority_queue<p, vector<p>, greater<p>> pq;
+        int n = grid.size();
+
+        auto valid = [&](int i, int j)
+        {
+            if (i >= 0 && j >= 0 && j < n && i < n && grid[i][j] == 0)
+            {
+                return true;
+            }
+            return false;
+        };
+
+        if (grid[0][0] == 0)
+        {
+            pq.push({1, {0, 0}});
+        }
+        vector<vector<bool>> visited(n, vector<bool>(n, false));
+
+        while (!pq.empty())
+        {
+            int w = pq.top().first;
+
+            int x = pq.top().second.first;
+            int y = pq.top().second.second;
+            pq.pop();
+
+            if (x == n - 1 && y == n - 1)
+                return w;
+
+            if (visited[x][y])
+                continue; // stale entry
+
+            visited[x][y] = true;
+
+            for (auto d : dir)
+            {
+                int x_ = x + d.first;
+                int y_ = y + d.second;
+                if (valid(x_, y_))
+                {
+                    pq.push({w + 1, {x_, y_}});
+                }
+            }
+        }
+
+        return -1;
+    }
+};
+
+// optimal approach--   use BFS since all edges have same weight
+
+class Solution
+{
+public:
+    using p = pair<int, pair<int, int>>;
+
+    int shortestPathBinaryMatrix(vector<vector<int>> &grid)
+    {
+        vector<pair<int, int>> dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}, {0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+        queue<p> pq;
+        int n = grid.size();
+
+        vector<vector<bool>> visited(n, vector<bool>(n, false));
+
+        auto valid = [&](int i, int j)
+        {
+            if (i >= 0 && j >= 0 && j < n && i < n && grid[i][j] == 0 && !visited[i][j])
+            {
+                return true;
+            }
+            return false;
+        };
+
+        if (grid[0][0] == 0)
+        {
+            pq.push({1, {0, 0}});
+        }
+
+        while (!pq.empty())
+        {
+            int w = pq.front().first;
+
+            int x = pq.front().second.first;
+            int y = pq.front().second.second;
+            pq.pop();
+
+            if (x == n - 1 && y == n - 1)
+                return w;
+
+            for (auto d : dir)
+            {
+                int x_ = x + d.first;
+                int y_ = y + d.second;
+                if (valid(x_, y_))
+                {
+                    pq.push({w + 1, {x_, y_}});
+                    visited[x_][y_] = true;
+                }
+            }
+        }
+
+        return -1;
+    }
+};
