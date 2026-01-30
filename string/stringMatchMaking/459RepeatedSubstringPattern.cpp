@@ -17,7 +17,7 @@ public:
 
         // You can also try from l = n/2 to l = 1 -> for(int l = n/2; l >= 0;
         // l--) //This can be helpful for large test valid cases to return early
-        for (int l = 1; l <= n / 2; l++)
+        for (int l = n / 2; l >= 1; l--)
         {
 
             if (n % l == 0)
