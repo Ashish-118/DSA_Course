@@ -1,96 +1,78 @@
-// two multisets maintain the first k smallest values
-class Container
-{
-public:
-    Container(int k) : k(k), sm(0) {}
 
-    // adjust the size of the ordered set to ensure that the first k smallest
-    // values are all in st1
-    void adjust()
-    {
-        while (st1.size() < k && st2.size() > 0)
-        {
-            int x = *(st2.begin());
-            st1.emplace(x);
-            sm += x;
-            st2.erase(st2.begin());
-        }
-        while (st1.size() > k)
-        {
-            int x = *prev(st1.end());
-            st2.emplace(x);
-            st1.erase(prev(st1.end()));
-            sm -= x;
-        }
-    }
-
-    // insert element x
-    void add(int x)
-    {
-        if (!st2.empty() && x >= *(st2.begin()))
-        {
-            st2.emplace(x);
-        }
-        else
-        {
-            st1.emplace(x);
-            sm += x;
-        }
-        adjust();
-    }
-
-    // delete element x
-    void erase(int x)
-    {
-        auto it = st1.find(x);
-        if (it != st1.end())
-        {
-            st1.erase(it), sm -= x;
-        }
-        else
-        {
-            st2.erase(st2.find(x));
-        }
-        adjust();
-    }
-
-    // sum of the first k smallest elements
-    long long sum() { return sm; }
-
-private:
-    int k;
-    // st1 saves the k smallest values, st2 saves the other values
-    multiset<int> st1, st2;
-    // sm represents the sum of the first k smallest elements
-    long long sm;
-};
-
+// Approach (Sliding Window using ordered sets)
+// T.C : O(n * log(k)), set operations are logarithmic
+// S.C : O(k), set stores (k-1) elements
 class Solution
 {
 public:
-    long long minimumCost(vector<int> &nums, int k, int dist)
+    typedef long long ll;
+    typedef pair<ll, ll> P;
+
+    ll minimumCost(vector<int> &nums, int k, int dist)
     {
         int n = nums.size();
-        // sliding window initialization
-        Container cnt(k - 2);
-        for (int i = 1; i < k - 1; i++)
-        {
-            cnt.add(nums[i]);
-        }
 
-        long long ans = cnt.sum() + nums[k - 1];
-        // enumerate the beginning of the last array
-        for (int i = k; i < n; i++)
+        set<P> kMinimum; // stores (k-1) minimum elements
+        set<P> remaining;
+
+        ll sum = 0; // stores sum of (k-1) min elements
+
+        int i = 1;
+        while (i - dist < 1)
         {
-            int j = i - dist - 1;
-            if (j > 0)
+            kMinimum.insert({nums[i], i});
+            sum += nums[i];
+            if (kMinimum.size() > k - 1)
             {
-                cnt.erase(nums[j]);
+                P temp = *kMinimum.rbegin();
+                sum -= temp.first;
+                remaining.insert(temp);
+                kMinimum.erase(temp);
             }
-            cnt.add(nums[i - 1]);
-            ans = min(ans, cnt.sum() + nums[i]);
+            i++;
         }
 
-        return ans + nums[0];
+        ll result = LONG_MAX; // stores min sum of (k-1) elements
+        // 0, 1, ...... i
+        while (i < n)
+        {
+            kMinimum.insert({nums[i], i});
+            sum += nums[i];
+
+            if (kMinimum.size() > k - 1)
+            {
+                P temp = *kMinimum.rbegin();
+                sum -= temp.first;
+                remaining.insert(temp);
+                kMinimum.erase(temp);
+            }
+
+            result = min(result, sum);
+
+            // shift window
+            // i-dist wala element will be removed
+            P remove = {nums[i - dist], i - dist};
+            if (kMinimum.count(remove))
+            {
+                kMinimum.erase(remove);
+                sum -= remove.first;
+
+                if (!remaining.empty())
+                {
+                    P temp = *remaining.begin();
+                    kMinimum.insert(temp);
+                    sum += temp.first;
+                    remaining.erase(temp);
+                }
+            }
+            else
+            {
+                remaining.erase(remove);
+            }
+
+            i++;
+        }
+
+        return nums[0] + result;
     }
 };
