@@ -15,6 +15,7 @@ public:
         int idx1 = -1;
         int idx2 = 0;
         bool allow = true;
+
         for (int i = 1; i < n; i++)
         {
             prefix[i] = nums[i] + prefix[i - 1];
