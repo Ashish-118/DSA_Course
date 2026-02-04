@@ -100,8 +100,11 @@ public:
             if ((pair1.second + 1 == pair2.first) &&
                     nums[pair1.second] > nums[pair2.first] ||
                 decreasingPairs.find({pair1.second, pair2.first}) !=
-                    decreasingPairs.end())
+                    decreasingPairs
+                        .end())
             {
+                // if the decreasing segment is present than
+                // only we move forward
 
                 long long increasingSum1 = 0;
 
@@ -156,6 +159,3 @@ public:
         return maxi;
     }
 };
-
-// time complexity : O(nlogn) due to set and vector of pairs
-// space complexity : O(n) to store increasing and decreasing pairs
