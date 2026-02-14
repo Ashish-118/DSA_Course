@@ -1,90 +1,114 @@
+// Approach (storing diff in Map)
+// T.C : O(nlogn)
+// S.C : O(n)
 class Solution
 {
 public:
-    int mono(const string &s)
+    int helper(string &s, int ch1, int ch2)
     {
-        if (s.empty())
-            return 0;
-        int cnt = 1;
-        int ans = 1;
-        for (int i = 1; i < (int)s.size(); i++)
-        {
-            if (s[i] == s[i - 1])
-                cnt++;
-            else
-                cnt = 1;
-            ans = max(ans, cnt);
-        }
-        return ans;
-    }
+        int n = s.length();
+        unordered_map<int, int> diffMap;
+        int maxL = 0;
+        int count1 = 0;
+        int count2 = 0;
 
-    int duo(const string &s, char c1, char c2)
-    {
-        map<int, int> pos;
-        pos[0] = -1;
-        int ans = 0;
-        int delta = 0;
-        for (int i = 0; i < (int)s.size(); i++)
+        for (int i = 0; i < n; i++)
         {
-            if (s[i] != c1 && s[i] != c2)
+            if (s[i] != ch1 && s[i] != ch2)
             {
-                pos.clear();
-                pos[0] = i;
-                delta = 0;
+                diffMap.clear();
+                count1 = 0;
+                count2 = 0;
                 continue;
             }
-            if (s[i] == c1)
+
+            if (s[i] == ch1)
+                count1++;
+            if (s[i] == ch2)
+                count2++;
+
+            if (count1 == count2)
             {
-                delta++;
+                maxL = max(maxL, count1 + count2);
+            }
+
+            int diff = count1 - count2;
+            if (diffMap.count(diff))
+            {
+                maxL = max(maxL, i - diffMap[diff]);
             }
             else
             {
-                delta--;
-            }
-            if (pos.find(delta) != pos.end())
-            {
-                ans = max(ans, i - pos[delta]);
-            }
-            else
-            {
-                pos[delta] = i;
+                diffMap[diff] = i;
             }
         }
-        return ans;
+
+        return maxL;
     }
 
-    int trio(const string &s)
-    {
-        vector<int> cnt(3, 0);
-
-        map<vector<int>, int> pos;
-        pos[{0, 0}] = -1;
-
-        int ans = 0;
-
-        for (int i = 0; i < (int)s.size(); i++)
-        {
-            cnt[s[i] - 'a']++;
-
-            vector<int> key = {cnt[1] - cnt[0], cnt[2] - cnt[0]};
-
-            if (pos.find(key) != pos.end())
-            {
-                ans = max(ans, i - pos[key]);
-            }
-            else
-            {
-                pos[key] = i;
-            }
-        }
-        return ans;
-    }
     int longestBalanced(string s)
     {
-        return max({mono(s),
-                    duo(s, 'a', 'b'),
-                    duo(s, 'a', 'c'),
-                    duo(s, 'b', 'c'),
-                    trio(s)});
+        int n = s.length();
+        int maxL = 0;
+
+        // Case-1
+        //"aaaa"
+        int count = 1; // s[0]
+        for (int i = 1; i < n; i++)
+        {
+            if (s[i] == s[i - 1])
+            {
+                count++;
+            }
+            else
+            {
+                maxL = max(maxL, count);
+                count = 1;
+            }
+        }
+        maxL = max(maxL, count);
+
+        // Case-2
+        maxL = max(maxL, helper(s, 'a', 'b'));
+        maxL = max(maxL, helper(s, 'a', 'c'));
+        maxL = max(maxL, helper(s, 'b', 'c'));
+
+        // Case-3
+        int countA = 0;
+        int countB = 0;
+        int countC = 0;
+        unordered_map<string, int> diffMap;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (s[i] == 'a')
+                countA++;
+            if (s[i] == 'b')
+                countB++;
+            if (s[i] == 'c')
+                countC++;
+
+            if (countA == countB && countA == countC)
+            {
+                maxL = max(maxL, countA + countB + countC);
+            }
+
+            int diffAB = countA - countB;
+            int diffAC = countA - countC;
+
+            string key =
+                to_string(diffAB) + "_" + to_string(diffAC); // log(n) digits
+
+            if (diffMap.count(key))
+            {
+                maxL = max(maxL, i - diffMap[key]);
+            }
+            else
+            {
+                diffMap[key] = i;
+            }
+        }
+
+        return maxL;
     }
 };
