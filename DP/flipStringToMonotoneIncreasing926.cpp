@@ -62,7 +62,7 @@ public:
             }
             else
             {
-                flip = 1 + solve(s, curr_index + 1, 1, t);
+                // flip = 1 + solve(s, curr_index+1, 1, t);
                 no_flip = solve(s, curr_index + 1, 0, t);
             }
         }
