@@ -48,3 +48,65 @@ public:
         }
     }
 };
+
+/// optimised bottom up approach with space optimisation
+
+int maxProductPath(vector<vector<int>> &grid)
+{
+    m = grid.size();
+    n = grid[0].size();
+
+    // t = vector<vector<pair<ll, ll>>>( m, vector<pair<ll, ll>>(n,
+    // {LLONG_MIN, LLONG_MAX}));
+
+    //  vector<pair<ll, ll>>curr( m, vector<pair<ll, ll>>(n, {LLONG_MIN,
+    //  LLONG_MAX}));
+
+    // t[m - 1][n - 1] = {grid[m - 1][n - 1], grid[m - 1][n - 1]};
+    vector<pair<ll, ll>> prev(n, {LLONG_MIN, LLONG_MAX});
+    vector<pair<ll, ll>> curr(n, {LLONG_MIN, LLONG_MAX});
+
+    for (int i = m - 1; i >= 0; i--)
+    {
+
+        for (int j = n - 1; j >= 0; j--)
+        {
+            if (i == m - 1 && j == n - 1)
+            {
+                curr[j] = {grid[m - 1][n - 1], grid[m - 1][n - 1]};
+                continue;
+            }
+            ll maxVal = LLONG_MIN;
+            ll minVal = LLONG_MAX;
+
+            // Down
+            if (i + 1 < m)
+            {
+                auto [downMax, downMin] = prev[j];
+                maxVal = max(
+                    {maxVal, grid[i][j] * downMax, grid[i][j] * downMin});
+                minVal = min(
+                    {minVal, grid[i][j] * downMax, grid[i][j] * downMin});
+            }
+
+            // Right
+            if (j + 1 < n)
+            {
+                auto [rightMax, rightMin] = curr[j + 1];
+                maxVal = max(
+                    {maxVal, grid[i][j] * rightMax, grid[i][j] * rightMin});
+                minVal = min(
+                    {minVal, grid[i][j] * rightMax, grid[i][j] * rightMin});
+            }
+
+            curr[j] = {maxVal, minVal};
+        }
+
+        prev = curr;
+        fill(begin(curr), end(curr), make_pair(LLONG_MIN, LLONG_MAX));
+    }
+
+    return prev[0].first < 0 ? -1 : prev[0].first % MOD;
+}
+}
+;
