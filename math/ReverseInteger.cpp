@@ -10,11 +10,8 @@ public:
             sign = 1;
             str = str.substr(1);
         }
-        if (x == INT_MAX || x == INT_MIN)
-            return 0;
 
         int l = str.length();
-        int num = abs(x);
 
         int num2 = 0;
 
