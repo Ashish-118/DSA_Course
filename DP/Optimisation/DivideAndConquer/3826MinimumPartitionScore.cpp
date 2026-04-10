@@ -50,7 +50,7 @@ public:
         for (int j = 0; j < n; j++)
         {
             dp[0][j] = cost(0, j);
-        }
+        } // j=0 means, make 0 parition, so we will have one subarray
 
         for (int i = 1; i < k; i++)
         {
