@@ -6,7 +6,7 @@ public:
     vector<int> prefixSum;
     vector<vector<ll>> dp;
 
-    ll cost(int i, int j)
+    ll cost(int i, int j) // [i, j]-> range of subarray
     {
         ll s = prefixSum[j] - (i > 0 ? prefixSum[i - 1] : 0);
 
@@ -50,12 +50,12 @@ public:
         for (int j = 0; j < n; j++)
         {
             dp[0][j] = cost(0, j);
-        } // j=0 means, make 0 parition, so we will have one subarray
+        } // k=0 means, make 0 parition, so we will have one subarray
 
         for (int i = 1; i < k; i++)
         {
             solve(0, n - 1, 0, n - 1,
-                  i); // here i-> means, no of subarray to make
+                  i); // here i-> means, no of partitions we have to make, so we will have i+1 subarrays
         }
 
         return dp[k - 1][n - 1];
