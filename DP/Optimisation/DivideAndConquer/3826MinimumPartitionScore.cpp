@@ -38,7 +38,7 @@ public:
     {
         int n = nums.size();
         prefixSum.assign(n, 0);
-        dp.assign(n, vector<ll>(n, 0));
+        dp.assign(k, vector<ll>(n, 0));
 
         prefixSum[0] = nums[0];
 
