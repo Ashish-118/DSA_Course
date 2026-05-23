@@ -45,6 +45,6 @@ public:
             }
         }
 
-        return ans < 0 ? 0 : ans;
+        return ans;
     }
 };
