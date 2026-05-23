@@ -80,3 +80,40 @@ public:
         return ans;
     }
 };
+
+// approach -3 without using upper_bound
+
+class Solution
+{
+public:
+    int maxProfitAssignment(vector<int> &difficulty, vector<int> &profit,
+                            vector<int> &worker)
+    {
+        int n1 = profit.size(), n2 = worker.size();
+
+        vector<pair<int, int>> v;
+        for (int i = 0; i < n1; i++)
+        {
+            v.push_back({difficulty[i], profit[i]});
+        }
+        sort(begin(v), end(v));
+        sort(begin(worker), end(worker));
+
+        int j = 0;
+        int ans = 0;
+        int prev = 0;
+
+        for (auto w : worker)
+        {
+            while (j < n1 && v[j].first <= w)
+            {
+                prev = max(prev, v[j].second);
+                j++;
+            }
+
+            ans += prev;
+        }
+
+        return ans;
+    }
+};
