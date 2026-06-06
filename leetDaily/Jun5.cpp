@@ -1,96 +1,95 @@
-class Solution
-{
+class Solution {
 public:
-    long long totalWaviness(long long num1, long long num2)
-    {
-        using ll = long long;
-        // calculate the sum of the volatility values of all numbers in [0, num]
-        auto solve = [&](ll num) -> ll
-        {
-            // if the fluctuation value of numbers less than 3 is 0
-            if (num < 100)
-            {
-                return 0;
+   
+    using ll = long long;
+    vector<vector<vector<vector<vector<vector<pair<ll, ll>>>>>>> t;
+    pair<long long, long long> solve(int i, int prev, int pattern, string lo,
+                                     string up, int tightUp, int tightLo,
+                                     int leadingZeroes) {
+        if (i >= up.length()) {
+            return {1, 0};
+        }
+        if (t[i][prev][pattern][tightUp][tightLo][leadingZeroes] !=
+            make_pair(-1LL, -1LL)) {
+            return t[i][prev][pattern][tightUp][tightLo][leadingZeroes];
+        }
+
+        int lower = tightLo ? lo[i] - '0' : 0;
+        int upper = tightUp ? up[i] - '0' : 9;
+
+        long long ans = 0;
+        long long count = 0;
+
+        for (int r = lower; r <= upper; r++) {
+            if (leadingZeroes && r == 0) {
+                auto v1 = solve(i + 1, 10, 0, lo, up, tightUp && (r == upper),
+                                tightLo && (r == lower), 1);
+                ans += v1.second;
+                count += v1.first;
+            } else if (prev == 10) {
+                auto v2 = solve(i + 1, r, 0, lo, up, tightUp && (r == upper),
+                                tightLo && (r == lower), 0);
+                ans += v2.second;
+                count += v2.first;
+            } else {
+
+                auto val =  make_pair(-1LL, -1LL);
+                if (prev > r) {
+                    val = solve(i + 1, r, 2, lo, up, tightUp && (r == upper),
+                                tightLo && (r == lower), 0);
+                } else if (prev < r) {
+                    val = solve(i + 1, r, 1, lo, up, tightUp && (r == upper),
+                                tightLo && (r == lower), 0);
+                } else {
+                    val = solve(i + 1, r, 0, lo, up, tightUp && (r == upper),
+                                tightLo && (r == lower), 0);
+                }
+                if (pattern == 0) {
+                    ans += val.second;
+                    count += val.first;
+                } else if (pattern == 1) {
+                    if (prev > r) {
+
+                        ans = ans + val.first + val.second;
+                        count += val.first;
+                    } else {
+                        ans += val.second;
+                        count += val.first;
+                    }
+                } else if (pattern == 2) {
+                    if (prev < r) {
+                        ans = ans + val.first + val.second;
+                        count += val.first;
+                    } else {
+                        ans += val.second;
+                        count += val.first;
+                    }
+                }
             }
-            string s = to_string(num);
-            int n = s.size();
+        }
 
-            // memoized search uses two independent arrays
-            // memo_cnt[pos][x][y]: the number of valid filling schemes where
-            // the current digit is at position pos, and the previous two digits
-            // are x and y
-            ll memo_cnt[16][10][10];
-            // memo_sum[pos][x][y]: the fluctuation value when the current
-            // position is pos, and the two left digits are x and y
-            ll memo_sum[16][10][10];
-            memset(memo_cnt, -1, sizeof(memo_cnt));
-            memset(memo_sum, -1, sizeof(memo_sum));
+        return t[i][prev][pattern][tightUp][tightLo][leadingZeroes] = {count,
+                                                                       ans};
+    }
 
-            auto dfs = [&](this auto &&dfs, int pos, int prev, int curr,
-                           bool isLimit, bool isLeading) -> pair<ll, ll>
-            {
-                // end position
-                if (pos == n)
-                {
-                    return {1, 0};
-                }
-                // use memoization only when not bounded by an upper limit and
-                // without leading zeros
-                if (!isLimit && !isLeading && prev >= 0 && curr >= 0)
-                {
-                    if (memo_cnt[pos][prev][curr] != -1)
-                    {
-                        return {memo_cnt[pos][prev][curr],
-                                memo_sum[pos][prev][curr]};
-                    }
-                }
+    long long totalWaviness(long long num1, long long num2) {
+        string str = to_string(num1), up = to_string(num2);
+        string lo = "";
 
-                // calculate the number of schemes and fluctuation value under
-                // the current conditions
-                ll cnt = 0, sum = 0;
-                int up = isLimit ? s[pos] - '0' : 9;
-                for (int digit = 0; digit <= up; ++digit)
-                {
-                    bool newLeading = isLeading && (digit == 0);
-                    // the previous number is updated to curr
-                    int newPrev = curr;
-                    // the current number is updated to digit
-                    int newCurr = newLeading ? -1 : digit;
-                    auto [subCnt, subSum] =
-                        dfs(pos + 1, newPrev, newCurr, isLimit && (digit == up),
-                            newLeading);
-                    // only calculate the fluctuation value when there are no
-                    // leading zeros
-                    if (!newLeading && prev >= 0 && curr >= 0)
-                    {
-                        // when the digit is a peak or a valley, update the
-                        // current fluctuation value
-                        if ((prev < curr && curr > digit) ||
-                            (prev > curr && curr < digit))
-                        {
-                            sum += subCnt;
-                        }
-                    }
+        for (int i = 0; i < up.length() - str.length(); i++) {
+            lo += "0";
+        }
 
-                    cnt += subCnt;
-                    sum += subSum;
-                }
+        lo += str;
 
-                if (!isLimit && !isLeading && prev >= 0 && curr >= 0)
-                {
-                    // update the memoization array
-                    memo_cnt[pos][prev][curr] = cnt;
-                    memo_sum[pos][prev][curr] = sum;
-                }
-
-                return {cnt, sum};
-            };
-
-            // pass dfs as the first parameter
-            auto [_, totalSum] = dfs(0, -1, -1, true, true);
-            return totalSum;
-        };
-
-        return solve(num2) - solve(num1 - 1);
+        cout << lo << " " << up << endl;
+        t.assign(
+            16,
+            vector<vector<vector<vector<vector<pair<ll, ll>>>>>>(
+                11, vector<vector<vector<vector<pair<ll, ll>>>>>(
+                        3, vector<vector<vector<pair<ll, ll>>>>(
+                               2, vector<vector<pair<ll, ll>>>(
+                                      2, vector<pair<ll, ll>>(2, {-1, -1}))))));
+        return solve(0, 10, 0, lo, up, 1, 1, 1).second;
     }
 };
