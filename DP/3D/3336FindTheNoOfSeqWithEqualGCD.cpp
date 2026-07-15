@@ -43,7 +43,9 @@ public:
     }
 };
 
-///. optimized version
+
+// optimization using tabulation
+
 #define mod 1000000007
 class Solution
 {
@@ -81,14 +83,36 @@ public:
         for (int x : nums)
             maxEl = max(maxEl, x);
 
-        t.assign(n + 1, vector<vector<int>>(maxEl + 1, vector<int>(maxEl + 1, 0)));
-        // return solve(0, 0, 0, nums);
+        // t.assign(n + 1, vector<vector<int>>(maxEl+1, vector<int>(maxEl+1,
+        // 0))); return solve(0, 0, 0, nums);
 
         // tabulation approach
 
+        // for (int gcd = 1; gcd <= maxEl; gcd++) {
+        //     t[n][gcd][gcd] = 1;
+        // }
+
+        // for (int i = n - 1; i >= 0; i--) {
+        //     for (int gcd_a = 0; gcd_a <= maxEl; gcd_a++) {
+        //         for (int gcd_b = 0; gcd_b <= maxEl; gcd_b++) {
+
+        //             int a = t[i + 1][gcd(gcd_a, nums[i])][gcd_b];
+        //             int b = t[i + 1][gcd_a][gcd(gcd_b, nums[i])];
+        //             int skip = t[i + 1][gcd_a][gcd_b];
+
+        //             t[i][gcd_a][gcd_b] = (1LL * a + b + skip) % mod;
+        //         }
+        //     }
+        // }
+
+        // return t[0][0][0];
+
+        vector<vector<int>> successor(maxEl + 1, vector<int>(maxEl + 1, 0));
+        vector<vector<int>> current(maxEl + 1, vector<int>(maxEl + 1, 0));
+
         for (int gcd = 1; gcd <= maxEl; gcd++)
         {
-            t[n][gcd][gcd] = 1;
+            successor[gcd][gcd] = 1;
         }
 
         for (int i = n - 1; i >= 0; i--)
@@ -98,15 +122,17 @@ public:
                 for (int gcd_b = 0; gcd_b <= maxEl; gcd_b++)
                 {
 
-                    int a = t[i + 1][gcd(gcd_a, nums[i])][gcd_b];
-                    int b = t[i + 1][gcd_a][gcd(gcd_b, nums[i])];
-                    int skip = t[i + 1][gcd_a][gcd_b];
+                    int a = successor[gcd(gcd_a, nums[i])][gcd_b];
+                    int b = successor[gcd_a][gcd(gcd_b, nums[i])];
+                    int skip = successor[gcd_a][gcd_b];
 
-                    t[i][gcd_a][gcd_b] = (1LL * a + b + skip) % mod;
+                    current[gcd_a][gcd_b] = (1LL * a + b + skip) % mod;
                 }
             }
+
+            successor = current;
         }
 
-        return t[0][0][0];
+        return current[0][0];
     }
 };
