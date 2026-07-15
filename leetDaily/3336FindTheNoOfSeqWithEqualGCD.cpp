@@ -42,3 +42,44 @@ public:
         return solve(0, 0, 0, 0, 0, nums);
     }
 };
+
+///. optimized version
+
+#define mod 1000000007
+class Solution
+{
+public:
+    vector<vector<vector<int>>> t;
+    int solve(int i, int gcd_a, int gcd_b, vector<int> &nums)
+    {
+        if (i >= nums.size())
+        {
+            if (gcd_b && gcd_a)
+            {
+                if (gcd_a == gcd_b)
+                {
+                    return 1;
+                }
+            }
+
+            return 0;
+        }
+
+        if (t[i][gcd_a][gcd_b] != -1)
+            return t[i][gcd_a][gcd_b];
+
+        int a = solve(i + 1, gcd(gcd_a, nums[i]), gcd_b, nums);
+        int b = solve(i + 1, gcd_a, gcd(gcd_b, nums[i]), nums);
+
+        int skip = solve(i + 1, gcd_a, gcd_b, nums);
+
+        return t[i][gcd_a][gcd_b] = (1LL * a + b + skip) % mod;
+    }
+    int subsequencePairCount(vector<int> &nums)
+    {
+        int n = nums.size();
+        t.assign(n, vector<vector<int>>(201, vector<int>(201, -1)));
+
+        return solve(0, 0, 0, nums);
+    }
+};
