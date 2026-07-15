@@ -44,7 +44,6 @@ public:
 };
 
 ///. optimized version
-
 #define mod 1000000007
 class Solution
 {
@@ -78,8 +77,36 @@ public:
     int subsequencePairCount(vector<int> &nums)
     {
         int n = nums.size();
-        t.assign(n, vector<vector<int>>(201, vector<int>(201, -1)));
+        int maxEl = -1;
+        for (int x : nums)
+            maxEl = max(maxEl, x);
 
-        return solve(0, 0, 0, nums);
+        t.assign(n + 1, vector<vector<int>>(maxEl + 1, vector<int>(maxEl + 1, 0)));
+        // return solve(0, 0, 0, nums);
+
+        // tabulation approach
+
+        for (int gcd = 1; gcd <= maxEl; gcd++)
+        {
+            t[n][gcd][gcd] = 1;
+        }
+
+        for (int i = n - 1; i >= 0; i--)
+        {
+            for (int gcd_a = 0; gcd_a <= maxEl; gcd_a++)
+            {
+                for (int gcd_b = 0; gcd_b <= maxEl; gcd_b++)
+                {
+
+                    int a = t[i + 1][gcd(gcd_a, nums[i])][gcd_b];
+                    int b = t[i + 1][gcd_a][gcd(gcd_b, nums[i])];
+                    int skip = t[i + 1][gcd_a][gcd_b];
+
+                    t[i][gcd_a][gcd_b] = (1LL * a + b + skip) % mod;
+                }
+            }
+        }
+
+        return t[0][0][0];
     }
 };
