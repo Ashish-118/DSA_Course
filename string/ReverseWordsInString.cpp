@@ -43,3 +43,20 @@ public:
         return s;
     }
 };
+
+
+
+//. in JS
+
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var reverseWords = function(s)
+{
+
+    s = s.trim();
+    s = s.trim().split(/\s + /).reverse().join(" ");
+
+    return s;
+};
