@@ -62,3 +62,43 @@ public:
         return ans;
     }
 };
+
+// optimal approach using monotonic stack
+
+class Solution {
+public:
+    string smallestSubsequence(string s) {
+        vector<int> lastIndex(26, -1);
+        vector<bool> seen(26, false);
+        string result;
+        
+        // Step 1: Record the last occurrence of each character
+        for (int i = 0; i < s.length(); ++i) {
+            lastIndex[s[i] - 'a'] = i;
+        }
+        
+        // Step 2: Build the monotonic stack
+        for (int i = 0; i < s.length(); ++i) {
+            char c = s[i];
+            int idx = c - 'a';
+            
+            // Skip if character is already in result
+            if (seen[idx]) continue;
+            
+            // Pop larger characters that appear again later
+            while (!result.empty() && 
+                   result.back() > c && 
+                   lastIndex[result.back() - 'a'] > i) {
+                
+                seen[result.back() - 'a'] = false;
+                result.pop_back();
+            }
+            
+            // Add current character
+            result.push_back(c);
+            seen[idx] = true;
+        }
+        
+        return result;
+    }
+};
