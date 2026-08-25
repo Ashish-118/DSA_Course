@@ -3,7 +3,7 @@ using namespace std;
 
 #define int long long
 #define endl '\n'
- 
+
 // time complexity : log(x)
 void solve()
 {
