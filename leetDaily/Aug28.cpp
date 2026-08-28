@@ -102,7 +102,7 @@ public:
             }
         }
 
-        // Construct the final palindrome string
+        // Construct the final palindrome strinG
         string ans = prefix + oddChar;
         string reversed_prefix = prefix;
         reverse(reversed_prefix.begin(), reversed_prefix.end());
