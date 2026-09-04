@@ -19,7 +19,7 @@ void solve()
     }
     vector<int> pre(m + 1, 0);
 
-    for (int i = 1; i <= m; i++)
+    for (int i = 1; i ;<= m; i++)
     {
         pre[i] = pre[i - 1] + cnt[i];
     }
