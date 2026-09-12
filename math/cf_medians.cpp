@@ -20,8 +20,8 @@ void solve()
     else
     {
         cout << 3 << endl;
-        int v = min((n - 1) - k,k-2);
-        cout << 1 << " " << k - v << " " << k + v+1 << endl;
+        int v = min((n - 1) - k, k - 2);
+        cout << 1 << " " << k - v << " " << k + v + 1 << endl;
     }
 }
 
