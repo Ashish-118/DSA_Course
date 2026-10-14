@@ -64,29 +64,34 @@ void solve()
     int n = v.size();
     int i = 0;
 
-    while (k > 0 && i < n - 1)
+    while (k >= 0 && i < n - 1)
     {
         // cout<<" i "<<i<<" k "<<k<<endl;
         int curr = v[i];
         int next = v[i + 1];
 
-        if (mp2[curr] == -1 || mp2[curr] >= k)
+        // cout<<" curr "<<curr<<" next "<<next<<endl;
+
+        if (mp2[curr] == -1 || 2 * mp2[curr] >= k)
         {
             cout << curr << endl;
             return;
         }
 
-        k -= mp2[curr];
+        k -= 2 * mp2[curr];
 
         int freq = mp_freq[curr];
+        int diff = next - curr;
 
-        int mini = min(next - curr, k / mp_freq[curr]);
+        int mini = min(diff, k / mp_freq[curr]);
         curr += mini;
+        // cout<<" k before "<<k<<endl;
         k -= mini * freq;
+        //  cout<<" k after "<<k<<endl;
 
         mp_freq[curr] += freq;
 
-        if (k == 0)
+        if (k == 0 || diff != mini)
         {
             cout << curr << endl;
             return;
@@ -99,12 +104,12 @@ void solve()
     {
 
         int curr = v[i];
-        if (mp2[curr] == -1 || mp2[curr] >= k)
+        if (mp2[curr] == -1 || 2 * mp2[curr] >= k)
         {
             cout << curr << endl;
             return;
         }
-        k -= mp2[curr];
+        k -= 2 * mp2[curr];
 
         int mini = k / mp_freq[curr];
         curr += mini;
