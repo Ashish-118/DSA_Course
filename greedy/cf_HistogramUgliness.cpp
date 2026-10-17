@@ -2,6 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#define int long long
+
 void solve()
 {
     int n;
@@ -62,18 +64,16 @@ void solve()
     cout << tot << '\n';
 }
 
-int main()
+int32_t main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    int t;
+    int t = 1;
     cin >> t;
-
     while (t--)
     {
         solve();
     }
-
     return 0;
 }
