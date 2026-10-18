@@ -1,97 +1,119 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 
 #define int long long
 #define endl '\n'
 
-void solve() {
+void solve()
+{
     int n;
-    cin>>n;
+    cin >> n;
 
     vector<int> a(n);
-    for(int i=0; i<n; i++){
-        cin>>a[i];
+    for (int i = 0; i < n; i++)
+    {
+        cin >> a[i];
     }
 
-    sort(begin(a),end(a));
-    int mini=INT_MAX;
-    int start=-1,end=-1;
-    map<int,int> mp;
-
-    for(int i=0; i<n-1; i++){
-      if(abs(a[i]-a[i+1])<mini){
-          mini = abs(a[i] - a[i + 1]);
-          start=a[i];
-          end=a[i+1];
-      }
-
-      mp[a[i]]++;
+    if (n == 1)
+    {
+        cout << a[0] << endl;
+        return;
     }
-    mp[a[n-1]]++;
+
+    sort(begin(a), end(a));
+
+    int mini = LLONG_MAX;
+    int start = -1, en = -1;
+    map<int, int> mp;
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        if (abs(a[i] - a[i + 1]) < mini)
+        {
+            mini = abs(a[i] - a[i + 1]);
+            start = a[i];
+            en = a[i + 1];
+        }
+
+        mp[a[i]]++;
+    }
+
+    mp[a[n - 1]]++;
 
     mp[start]--;
-    mp[end]--;
+    mp[en]--;
 
-    a[0]=start;
-    auto it=mp.find(start);
-    if(mp[start]==0){
-        it++;
+    a[0] = start;
+    a[n - 1] = en;
+
+    if (mp[start] == 0)
+    {
         mp.erase(start);
     }
-    if (mp[end] == 0)
+
+    if (mp.count(en) && mp[en] == 0)
     {
-        mp.erase(end);
+        mp.erase(en);
     }
 
-    int idx=1;
+    int idx = 1;
 
-    while(it!=mp.end()){
-        auto f=*it->second;
-        auto val=*it->first;
-        for(int i=0; i<f; i++){
-            a[idx++]=val;
-        }
-        it++;
-        mp.erase(val);
-    }
+    // First insert all remaining values >= start.
+    auto it = mp.lower_bound(start);
 
-    if(!mp.empty()){
-        for (auto m : mp)
+    while (it != mp.end())
+    {
+        int val = it->first;
+        int f = it->second;
+
+        for (int i = 0; i < f && idx < n - 1; i++)
         {
-            int f = m.second;
-            int val = m.first;
-            for (int i = 0; i < f; i++)
-            {
-                a[idx++] = val;
-            }
-            mp.erase(val);
+            a[idx++] = val;
         }
+
+        it = mp.erase(it);
     }
 
-    a[n-1]=end;
+    // Then insert all remaining values < start.
+    it = mp.begin();
 
+    while (it != mp.end())
+    {
+        int val = it->first;
+        int f = it->second;
 
-    for(auto x:a){
-        cout<<x<<" ";
+        for (int i = 0; i < f && idx < n - 1; i++)
+        {
+            a[idx++] = val;
+        }
+
+        it = mp.erase(it);
     }
 
-    cout<<endl;
-   
+    // Finally, place en at the last position.
+    a[n - 1] = en;
 
-
-
-
-
+    for (auto x : a)
+    {
+        cout << x << " ";
+    }
+    cout << endl;
 }
 
-int32_t main() {
+int32_t main()
+{
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    
+    cin.tie(nullptr);
+
     int t = 1;
     cin >> t;
-    while (t--) {
+
+    while (t--)
+    {
         solve();
     }
+
     return 0;
 }
