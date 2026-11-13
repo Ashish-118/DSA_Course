@@ -126,6 +126,7 @@ public:
         }
     }
 
+
     int kruskalsMST(int V, vector<vector<int>> &edges)
     {
         sort(begin(edges), end(edges), cmp);
@@ -227,9 +228,11 @@ public:
 Union - Find / Disjoint Set Complexity Explanation
 
                    There are three common optimizations used in Union -
+                   
     Find(DSU) :
 
-    1. Union by Rank(or Size) 2. Path Compression
+    1. Union by Rank(or Size) 
+    2. Path Compression
     3. Both combined
 
     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
