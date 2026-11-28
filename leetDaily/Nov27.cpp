@@ -1,25 +1,64 @@
-class Solution {
+class Solution
+{
 public:
-    int maximumSaleItems(vector<vector<int>>& items, int budget) {
-        vector<int> f(budget + 1, 0);
-        int mn = INT_MAX;
-        for (const auto& item : items) {
-            int factor = item[0], price = item[1];
-            mn = min(mn, price);
-            int cnt = 0;
-            for (const auto& other : items) {
-                if (other[0] % factor == 0) {
-                    cnt++;
+    using vec = vector<int>;
+    vector<vec> v;
+    int t[1001][1501][2];
+
+    int solve(int i, int repeat, int budget, int n)
+    {
+        if (i >= n)
+        {
+            return 0;
+        }
+        else if (v[i][0] > budget)
+        {
+            return t[i][budget][repeat] = solve(i + 1, 0, budget, n);
+        }
+
+        if (t[i][budget][repeat] != -1)
+        {
+            return t[i][budget][repeat];
+        }
+
+        int take = 0;
+        if (repeat)
+        {
+            take = 1;
+        }
+        else
+        {
+            take = v[i][1];
+        }
+
+        int rep = solve(i, 1, budget - v[i][0], n);
+        int nxt = solve(i + 1, 0, budget - v[i][0], n);
+
+        int notTake = solve(i + 1, 0, budget, n);
+
+        return t[i][budget][repeat] = max(take + max(rep, nxt), notTake);
+    }
+
+    int maximumSaleItems(vector<vector<int>> &items, int budget)
+    {
+        int n = items.size();
+
+        for (int i = 0; i < n; i++)
+        {
+            int count = 0;
+
+            for (int j = 0; j < n; j++)
+            {
+                if (items[j][0] % items[i][0] == 0)
+                {
+                    count++;
                 }
             }
-            for (int j = budget; j >= price; j--) {
-                f[j] = max(f[j], f[j - price] + cnt);
-            }
+
+            v.push_back({items[i][1], count});
         }
-        int ans = 0;
-        for (int j = 0; j <= budget; j++) {
-            ans = max(ans, f[j] + (budget - j) / mn);
-        }
-        return ans;
+        memset(t, -1, sizeof(t));
+
+        return solve(0, 0, budget, n);
     }
 };
